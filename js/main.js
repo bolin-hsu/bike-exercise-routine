@@ -28,8 +28,7 @@ var program = [
 	],
 	index = 0,
 	time = 0,
-	total = 0,
-	msg;
+	total = 0;
 
 function format_time(seconds) {
   var M = Math.floor(seconds / 60);
@@ -41,23 +40,32 @@ function total_msg(s) {
   return "Total: " + format_time(s);
 }
 
+function display_time() {
+  document.getElementById("countdown").innerHTML = format_time(time);
+  document.getElementById("countup").innerHTML = total_msg(total);
+  window.setTimeout(update, 1000);
+}
+
 function update() {
-  if (time == 0) {
-      if (index < program.length) {
-          time = program[index]["duration"];
-          msg = program[index]["msg"];
-          index += 1;
-          document.getElementById("msg").innerHTML = msg;
-          document.getElementById("countdown").innerHTML = format_time(time);
-          document.getElementById("countup").innerHTML = total_msg(total)
-          window.setTimeout(update, 1000);
+  if (index < program.length) {
+    if (time == 0) {
+      // When the timer counts down to 0, advance to the next
+      // stage and update the msg
+      time = program[index]["duration"];
+      var msg = program[index]["msg"];
+      index += 1;
+      document.getElementById("msg").innerHTML = msg;
+    } else {
+      time -= 1;
+      total += 1;
     }
+    display_time();
+  } else if (index == program.length && time > 0) {
+    time -= 1;
+    total += 1;
+    display_time();
   } else {
-     time -= 1
-     total += 1
-     document.getElementById("countdown").innerHTML = format_time(time)
-     document.getElementById("countup").innerHTML = total_msg(total)
-     window.setTimeout(update, 1000)
+    // TODO: End of routine message.
   }
 }
 
